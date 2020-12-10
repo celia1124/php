@@ -32,16 +32,6 @@
     </table>
 
 
-    <table>
-        <?php for ($i = 0; $i < 16; $i++) : ?>
-            <tr>
-                <?phpfor($j=0,$j<16,$j++):?>
-                <td style="background-color: # <?php printf("%x%x", $i, $j) ?>0;"></td>
-                <td style="background-color: #<?php printf("%x%x", $i, $j) ?>;"></td>
-            </tr>
-        <?php endfor; ?>
-    </table>
-
 </body>
 
 </html>
