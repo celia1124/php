@@ -44,12 +44,15 @@ $rows = $stmt->fetchAll();
                         <a class="page-link" href="?page=<?= $page - 1 ?>">
                             <i class="far fa-arrow-alt-circle-left"></i>
                         </a></li>
-                    <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                        <li class="page-item <?= $page == $i ? 'active' : '' ?>">
-                            <a class="page-link" href="?page=<?= $i ?>">
-                                <?= $i ?>
-                            </a></li>
-                    <?php endfor ?>
+                    <?php for ($i = $page - 5; $i <= $page + 5; $i++) :
+                        if ($i >= 1 and $i <= $totalPages) :
+                    ?>
+                            <li class="page-item <?= $page == $i ? 'active' : '' ?>">
+                                <a class="page-link" href="?page=<?= $i ?>">
+                                    <?= $i ?>
+                                </a></li>
+                    <?php endif;
+                    endfor ?>
 
                     <li class="page-item <?= $page == $totalPages ? 'disabled' : '' ?>">
                         <a class="page-link" href="?page=<?= $page + 1 ?>">
@@ -81,7 +84,8 @@ $rows = $stmt->fetchAll();
                 <tbody>
                     <?php foreach ($rows as $r) : ?>
                         <tr>
-                            <td class="remove-icon"><a href="#">
+                            <td class="remove-icon">
+                                <a href="ab_delete.php?sid=<?= $r['sid'] ?>">
                                     <i class="fas fa-minus-circle"></i>
                                 </a></td>
                             <td><?= $r['sid'] ?></td>
@@ -99,4 +103,12 @@ $rows = $stmt->fetchAll();
 
 </div>
 <?php include __DIR__ . '/parts/scripts.php'; ?>
+
+<script>
+    function removeItem(event) {
+        const t = event.target;
+        t.closest('tr').remove();
+    }
+</script>
+
 <?php include __DIR__ . '/parts/foot.php'; ?>

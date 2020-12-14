@@ -4,37 +4,44 @@ if (!isset($_SESSION)) {
 }
 $pageName = 'ab_insert';
 ?>
+<style>
+    .form-text.erromsg {
+        color: red;
+    }
+</style>
 <?php include __DIR__ . '/parts/head.php'; ?>
 <?php include __DIR__ . '/parts/navbar.php'; ?>
 <div class="container">
     <div class="row d-flex justify-content-center">
         <div class="col-lg-6">
-            <?php if (isset($errorMsg)) : ?>
-                <div class="alert alert-danger" role="alert">
-                    <?= $errorMsg ?>
-                </div>
-            <?php endif ?>
+
+            <div class="alert alert-danger" role="alert" id="info" style="display: none;">
+                錯誤
+            </div>
+
 
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">新增資料</h5>
 
-                    <form method="post">
+                    <form name="form1" method="post" novalidate onsubmit="checkForm(); return false;">
                         <div class="form-group">
-                            <label for="name">name</label>
+                            <label for="name">**name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
+                            <small class="form-text error-msg" style="display: none"></small>
                         </div>
                         <div class="form-group">
-                            <label for="email">email</label>
+                            <label for="email">**email</label>
                             <input type="email" class="form-control" id="email" name="email">
+                            <small class="form-text error-msg" style="display: none"></small>
                         </div>
                         <div class="form-group">
-                            <label for="mobil">mobil</label>
-                            <input type="text" class="form-control" id="mobil" name="mobil">
+                            <label for="mobile">mobil</label>
+                            <input type="text" class="form-control" id="mobile" name="mobile" pattern="09\d{2}-\d{3}-\d{3}$" placeholder="0900-000-000">
                         </div>
                         <div class="form-group">
                             <label for="birthday">birthday</label>
-                            <input type="text" class="form-control" id="birthday" name="birthday">
+                            <input type="date" class="form-control" id="birthday" name="birthday">
                         </div>
                         <div class="form-group">
                             <label for="address">address</label>
@@ -54,4 +61,68 @@ $pageName = 'ab_insert';
     </div>
 </div>
 <?php include __DIR__ . '/parts/scripts.php'; ?>
+<script>
+    const info = document.querySelector('#info');
+    // document.querySelector('#name').style.borderColor = 'red'
+    const name = document.querySelector('#name');
+    const email = document.querySelector('#email');
+    const email_re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+    function checkForm() {
+        info.style.display = 'none';
+        let isPass = true;
+
+        name.style.borderColor = '#CCCCCC';
+        // name.closest('.form-group').querySelector('small').style.display = 'none';
+        name.nextElementSibling.style.display = 'none';
+
+        email.style.borderColor = '#CCCCCC';
+        // email.closest('.form-group').querySelector('small').style.display = 'none';
+        email.nextElementSibling.style.display = 'none';
+
+        if (name.value.length < 2) {
+            isPass = false;
+            name.style.borderColor = 'red';
+            let small = name.closest('.form-group').querySelector('small');
+            small.innerText = "請輸入正確的名字";
+            small.style.display = 'block';
+        }
+
+        // if (!email_re.test(email.value)) {
+        //     isPass = false;
+        //     email.style.borderColor = 'red';
+        //     let small = email.closest('.form-group').querySelector('small');
+        //     small.innerText = "請輸入正確的 email";
+        //     small.style.display = 'block';
+        // }
+
+
+        if (isPass) {
+            const fd = new FormData(document.form1);
+
+            fetch('ab-insert-api.php', {
+                    method: 'POST',
+                    body: fd
+                })
+                .then(r => r.json())
+                .then(obj => {
+                    console.log(obj);
+                    if (obj.success) {
+                        // 新增成功
+                        info.classList.remove('alert-danger');
+                        info.classList.add('alert-success');
+                        info.innerHTML = '新增成功';
+                    } else {
+                        info.classList.remove('alert-success');
+                        info.classList.add('alert-danger');
+                        info.innerHTML = '新增失敗';
+                    }
+                    info.style.display = 'block';
+                });
+
+        }
+
+    }
+</script>
+
 <?php include __DIR__ . '/parts/foot.php'; ?>
