@@ -1,54 +1,73 @@
 <?php
+require __DIR__ . '/db_content.php';
 require __DIR__ . '/is_admin.php';
-$pageName = 'ab_insert';
+
+if (!isset($_GET['sid'])) {
+    header('Location: ab_list.php');
+    exit;
+}
+$sid = intval($_GET['sid']);
+
+$row = $pdo
+    ->query("SELECT * FROM address_book WHERE sid=$sid ")
+    ->fetch();
+
+if (empty($row)) {
+    header('Location: ab_list.php');
+    exit;
+}
+
+
 ?>
+<?php include __DIR__ . '/parts/head.php'; ?>
+<?php include __DIR__ . '/parts/navbar.php'; ?>
 <style>
-    .form-text.erromsg {
+    form small.error-msg {
         color: red;
     }
 </style>
-<?php include __DIR__ . '/parts/head.php'; ?>
-<?php include __DIR__ . '/parts/navbar.php'; ?>
 <div class="container">
     <div class="row d-flex justify-content-center">
         <div class="col-lg-6">
 
-            <div class="alert alert-danger" role="alert" id="info" style="display: none;">
+            <div class="alert alert-danger" role="alert" id="info" style="display: none">
                 錯誤
             </div>
 
-
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">新增資料</h5>
+                    <h5 class="card-title">編輯資料</h5>
 
-                    <form name="form1" method="post" novalidate onsubmit="checkForm(); return false;">
+                    <form name="form1" novalidate onsubmit="checkForm(); return false;">
+
+                        <!-- <form name="form1" method="post"> -->
+                        <input type="hidden" name="sid" value="<?= $sid ?>">
                         <div class="form-group">
-                            <label for="name">**name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <label for="name">** name</label>
+                            <input type="text" class="form-control" id="name" name="name" required value="<?= htmlentities($row['name']) ?>">
                             <small class="form-text error-msg" style="display: none"></small>
                         </div>
                         <div class="form-group">
-                            <label for="email">**email</label>
-                            <input type="email" class="form-control" id="email" name="email">
+                            <label for="email">** email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<?= htmlentities($row['email']) ?>">
                             <small class="form-text error-msg" style="display: none"></small>
                         </div>
                         <div class="form-group">
-                            <label for="mobile">mobil</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile" pattern="09\d{2}-\d{3}-\d{3}$" placeholder="0900-000-000">
+                            <label for="mobile">mobile</label>
+                            <input type="text" class="form-control" id="mobile" name="mobile" value="<?= htmlentities($row['mobile']) ?>" pattern="09\d{2}-?\d{3}-?\d{3}">
                         </div>
                         <div class="form-group">
                             <label for="birthday">birthday</label>
-                            <input type="date" class="form-control" id="birthday" name="birthday">
+                            <input type="date" class="form-control" id="birthday" name="birthday" value="<?= htmlentities($row['birthday']) ?>">
                         </div>
+
                         <div class="form-group">
                             <label for="address">address</label>
-                            <textarea class="form-control" id="address" name="address" cols="50" rows="3"></textarea>
+                            <textarea class="form-control" id="address" name="address" cols="50" rows="3"><?= htmlentities($row['address']) ?></textarea>
                         </div>
-
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-
+                        <!-- button type="button" class="btn btn-danger">danger</button -->
+                        <button type="submit" class="btn btn-primary">修改</button>
+                        <!-- input class="btn btn-warning" type="submit" value="---" -->
                     </form>
 
 
@@ -86,19 +105,19 @@ $pageName = 'ab_insert';
             small.style.display = 'block';
         }
 
-        // if (!email_re.test(email.value)) {
-        //     isPass = false;
-        //     email.style.borderColor = 'red';
-        //     let small = email.closest('.form-group').querySelector('small');
-        //     small.innerText = "請輸入正確的 email";
-        //     small.style.display = 'block';
-        // }
+        if (!email_re.test(email.value)) {
+            isPass = false;
+            email.style.borderColor = 'red';
+            let small = email.closest('.form-group').querySelector('small');
+            small.innerText = "請輸入正確的 email";
+            small.style.display = 'block';
+        }
 
 
         if (isPass) {
             const fd = new FormData(document.form1);
 
-            fetch('ab-insert-api.php', {
+            fetch('ab_edit-api.php', {
                     method: 'POST',
                     body: fd
                 })
@@ -106,14 +125,13 @@ $pageName = 'ab_insert';
                 .then(obj => {
                     console.log(obj);
                     if (obj.success) {
-                        // 新增成功
                         info.classList.remove('alert-danger');
                         info.classList.add('alert-success');
-                        info.innerHTML = '新增成功';
+                        info.innerHTML = '修改成功';
                     } else {
                         info.classList.remove('alert-success');
                         info.classList.add('alert-danger');
-                        info.innerHTML = '新增失敗';
+                        info.innerHTML = obj.error || '修改失敗';
                     }
                     info.style.display = 'block';
                 });
@@ -122,5 +140,4 @@ $pageName = 'ab_insert';
 
     }
 </script>
-
 <?php include __DIR__ . '/parts/foot.php'; ?>

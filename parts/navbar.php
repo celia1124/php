@@ -19,29 +19,30 @@ if (!isset($pageName)) $pageName = "";
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item <?= $pageName == 'ab-list' ? 'active' : '' ?>">
+                <li class="nav-item <?= $pageName == 'ab_list' ? 'active' : '' ?>">
                     <a class="nav-link" href="<?= WEB_ROOT ?>ab_list.php">通訊錄 <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item <?= $pageName == 'ab-insert' ? 'active' : '' ?>">
+                <li class="nav-item <?= $pageName == 'ab_insert' ? 'active' : '' ?>">
                     <a class="nav-link" href="<?= WEB_ROOT ?>ab_insert.php">新增通訊錄 <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
+
+            </ul>
+
+            <ul class="navbar-nav">
+                <?php if (isset($_SESSION['admin'])) : ?>
+                    <li class="nav-item">
+                        <a class="nav-link"><?= $_SESSION['admin']['account'] ?></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= WEB_ROOT ?>logout.php">登出</a>
+                    </li>
+                <?php else : ?>
+                    <li class="nav-item <?= $pageName == 'login' ? 'active' : '' ?>">
+                        <a class="nav-link" href="<?= WEB_ROOT ?>login.php">登入</a>
+                    </li>
+
+                <?php endif ?>
+
             </ul>
 
         </div>

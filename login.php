@@ -1,17 +1,27 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
+
+require __DIR__ . '/db_content.php';
+$pageName = 'login';
+
 $title = '登入';
 
 if (isset($_POST['account']) and isset($_POST['password'])) {
-    if ($_POST['account'] === 'hello' and $_POST['password'] === '123') {
+
+    $sql = "SELECT sid, account FROM admin WHERE account=? AND password=SHA1(?) ";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        $_POST['account'],
+        $_POST['password'],
+    ]);
+
+    $row = $stmt->fetch();
+    if (empty($row)) {
+        $errorMsg = '帳號或密碼錯誤';
     } else {
-        $errorMsg = 'mistake';
+        $_SESSION['admin'] = $row;
     }
 }
-
-
 ?>
 
 <?php include __DIR__ . '/parts/head.php'; ?>
@@ -26,7 +36,7 @@ if (isset($_POST['account']) and isset($_POST['password'])) {
             <?php endif ?>
             <?php if (isset($_SESSION['admin'])) : ?>
                 <div>
-                    <h3>Hello <?= $_SESSION['admin'] ?></h3>
+                    <h3>Hello <?= $_SESSION['admin']['account'] ?></h3>
                     <p><a href="logout.php">登出</a></p>
                 </div>
             <?php else : ?>

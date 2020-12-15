@@ -1,9 +1,5 @@
 <?php
 require __DIR__ . '/db_content.php';
-if (!isset($_SESSION['admin'])) {
-    include __DIR__ . '/ab_list.noadmin.php';
-    exit;
-}
 $pageName = 'ab_list';
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
@@ -74,37 +70,30 @@ $rows = $stmt->fetchAll();
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th scope="col">
-                            <i class="fas fa-minus-circle"></i>
-                        </th>
+
+
                         <th scope="col">sid</th>
                         <th scope="col">name</th>
                         <th scope="col">email</th>
                         <th scope="col">mobile</th>
                         <th scope="col">birthday</th>
                         <th scope="col">address</th>
-                        <th scope="col">
-                            <i class="fas fa-edit"></i>
-                        </th>
+
+
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($rows as $r) : ?>
                         <tr>
-                            <td class="remove-icon">
-                                <a href="ab_delete.php?sid=<?= $r['sid'] ?>" onclick="del_it(event)">
-                                    <i class="fas fa-minus-circle"></i>
-                                </a></td>
+
                             <td><?= $r['sid'] ?></td>
                             <td><?= $r['name'] ?></td>
                             <td><?= $r['email'] ?></td>
                             <td><?= $r['mobile'] ?></td>
                             <td><?= $r['birthday'] ?></td>
-                            <td><?= $r['address'] ?></td>
                             <td>
-                                <a href="ab_edit.php?sid=<?= $r['sid'] ?>">
-                                    <i class="fas fa-edit"></i>
-                                </a>
+
+                                <?= htmlentities($r['address']) ?>
                             </td>
                         </tr>
                     <?php endforeach ?>

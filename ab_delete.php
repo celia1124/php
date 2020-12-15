@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/db_content.php';
+require __DIR__ . '/is_admin.php';
 
 if (isset($_GET['sid'])) {
     $sid = intval($_GET['sid']);
