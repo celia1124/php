@@ -31,9 +31,10 @@ if (!isset($pageName)) $pageName = "";
             <ul class="navbar-nav">
                 <?php if (isset($_SESSION['admin'])) : ?>
                     <li class="nav-item">
-                        <a class="nav-link"><?= $_SESSION['admin']['account'] ?></a>
+                        <a class="nav-link" href="<?= WEB_ROOT ?>ab_admin.edit.php"><?= $_SESSION['admin']['account'] ?></a>
                     </li>
-                    <li class="nav-item">
+
+                    <li class=" nav-item">
                         <a class="nav-link" href="<?= WEB_ROOT ?>logout.php">登出</a>
                     </li>
                 <?php else : ?>
