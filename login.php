@@ -7,7 +7,7 @@ $title = '登入';
 
 if (isset($_POST['account']) and isset($_POST['password'])) {
 
-    $sql = "SELECT sid, account FROM admin WHERE account=? AND password=SHA1(?) ";
+    $sql = "SELECT * FROM admin WHERE account=? AND password=SHA1(?) ";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
